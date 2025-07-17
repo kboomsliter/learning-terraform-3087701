@@ -37,8 +37,8 @@ module "blog_autoscaling" {
 
   min_size            = var.asg_size.min
   max_size            = var.asg_size.max
-  vpc_zone_identifies = module.blog_vpc.public_subnets
-  target_group_arns   = module.blog_alb.target_group_arns
+  vpc_zone_identifier = module.blog_vpc.public_subnets
+  autoscaling_group_target_group_arns   = module.blog_alb.target_group_arns
   security_groups     = module.blog_security_group.security_group_id
   instance_type       = var.instance_type
   image_id            = data.aws_ami.app_ami.id
