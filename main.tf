@@ -14,6 +14,10 @@ data "aws_ami" "app_ami" {
   owners = ["979382823631"] # Bitnami
 }
 
+data "aws_vpc "default" {
+  default = true
+}
+
 resource "aws_instance" "blog" {
   ami           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
@@ -21,4 +25,17 @@ resource "aws_instance" "blog" {
   tags = {
     Name = "HelloWorld"
   }
+}
+
+module "blog_security_group {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.3.0"
+  
+  vpc_id  = data.aws_vpc.default.id
+  name    = "blog"
+
+  ingress_rules       = ["http-80-tcp","https-443-tcp"]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+  egress_rules        = ["all-all"]
+  egress_cidr_blocks  = ["0.0.0.0/0"]
 }
